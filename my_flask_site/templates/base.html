@@ -5,17 +5,17 @@
     <title>{% block title %}Мій сайт{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="{{ 'dark' if session.get('theme') == 'dark' else '' }}">
 
 <nav>
     <a href="/">Головна</a>
     <a href="/about">Про нас</a>
     <a href="/contacts">Контакти</a>
+    <a href="/toggle-theme">🌙</a>
 </nav>
 
 <hr>
 
 {% block content %}{% endblock %}
 
-</body>
 </html>

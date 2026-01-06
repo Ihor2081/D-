@@ -1,14 +1,97 @@
+/* Світла тема (за замовчуванням) */
+:root {
+    --bg-color: #f4f6f8;
+    --card-bg: #ffffff;
+    --text-color: #222;
+    --link-color: #1a73e8;
+    --button-bg: #1a73e8;
+    --button-hover: #1558b0;
+    --item-bg: #f9f9f9;
+}
+
+/* Темна тема */
+body.dark {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #eaeaea;
+    --link-color: #8ab4f8;
+    --button-bg: #8ab4f8;
+    --button-hover: #669df6;
+    --item-bg: #2a2a2a;
+}
+
+/* Загальні стилі */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Контейнер */
+.container {
+    max-width: 600px;
+    margin: 60px auto;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Навігація */
+
+nav a {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 nav a {
-    margin-right: 15px;
+    margin: 0 15px;
     text-decoration: none;
-    color: darkblue;
+    color: var(--link-color);
+    font-weight: bold;
 }
 
-nav a:hover {
-    text-decoration: underline;
+/* Форма */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #888;
+    background: transparent;
+    color: var(--text-color);
+}
+
+/* Кнопка */
+button {
+    padding: 10px 18px;
+    background: var(--button-bg);
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--button-hover);
+}
+
+/* Список */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: var(--item-bg);
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
 }
