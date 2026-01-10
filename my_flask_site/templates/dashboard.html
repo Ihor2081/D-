@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Кабінет{% endblock %}
+
+{% block content %}
+<h2>Користувачі</h2>
+
+<ul>
+{% for user, data in users.items() %}
+    <li>
+
+        <div class="user-row">
+
+         <!-- ПОВНЕ ОНОВЛЕННЯ -->
+            <form method="post" action="{{ url_for('users_handler', username=user) }}" class="inline-form">
+                <input type="hidden" name="_method" value="PUT">
+
+                <input type="text" name="name" value="{{ data['name'] }}" placeholder="Імʼя">
+                <input type="text" name="email" value="{{ data['email'] }}" placeholder="Email">
+                <input type="password" name="password" placeholder="Змінити пароль">
+                <button type="submit">Оновити</button>
+            </form>
+ <!-- PATCH — тільки email -->
+            <form method="post" action="{{ url_for('users_handler', username=user) }}" class="inline-form">
+                 <input type="hidden" name="_method" value="PATCH">
+                 <input type="email" name="email" placeholder="Новий email">
+                 <button type="submit">Оновити email</button>
+            </form>
+    <!-- ВИДАЛЕННЯ -->
+            <form method="post" action="{{ url_for('users_handler', username=user) }}" class="inline-form">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="delete-btn">Видалити</button>
+            </form>
+
+        </div>
+
+    </li>
+{% endfor %}
+</ul>
+
+<h3 class="center-title">Додати користувача</h3>
+
+<div class="user-row center-block">
+    <form method="post" action="{{ url_for('add_user') }}" class="inline-form">
+        <input type="text" name="username" placeholder="Імʼя">
+        <input type="email" name="email" placeholder="Email">
+        <input type="password" name="password" placeholder="Пароль">
+        <button type="submit">Додати</button>
+    </form>
+</div>
+
+<div class="logout-center">
+    <a href="{{ url_for('logout') }}" class="btn">Вийти</a>
+</div>
+{% endblock %}
