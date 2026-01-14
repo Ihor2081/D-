@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "Computer",
+        "model": "Apple",
+        "price": 1000.0,
+        "quantity": 7,
+        "created_at": "2026-01-13T17:18:29.775787"
+    },
+    {
+        "id": 2,
+        "name": "Computer",
+        "model": "Mac",
+        "price": 5000.0,
+        "quantity": 5,
+        "created_at": "2026-01-13T17:18:39.952484"
+    }
+]

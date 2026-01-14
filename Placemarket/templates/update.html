@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Редагування товару</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; padding: 30px; }
+        form {
+            background: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input, button {
+            padding: 8px;
+            margin-top: 8px;
+            margin-right: 5px;
+            width: 100%;
+        }
+
+        button {
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        a { text-decoration: none; color: #007bff; display: block; margin-top: 10px; text-align: center;}
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center;">Редагування товару</h1>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Назва" value="{{ product.name }}" required>
+    <input type="text" name="model" placeholder="Модель" value="{{ product.model }}" required>
+    <input type="number" name="price" placeholder="Ціна" step="0.01" value="{{ product.price }}" required>
+    <input type="number" name="quantity" placeholder="Кількість" min="1" value="{{ product.quantity }}" required>
+    <button type="submit">Зберегти зміни</button>
+</form>
+
+<a href="/">← Повернутися до списку товарів</a>
+
+</body>
+</html>

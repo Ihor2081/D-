@@ -73,7 +73,7 @@ def users_handler(username):
             users[username]["email"] = email
             flash("Email оновлено", "success")
             return redirect(url_for("dashboard"))
-        
+
     elif method == "DELETE":
         users.pop(username, None)
         flash("Ви успішно видалили користувача ✅", "success")
