@@ -61,10 +61,10 @@
         <td>{{ product.model }}</td>
         <td>{{ product.price }} грн</td>
         <td>{{ product.quantity }}</td>
-        <td>{{ product.created_at[:10] }}</td>
+        <td>{{ product.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
         <td>
             <a href="/update/{{ product.id }}"><button type="button" class="btn-edit">Редагувати</button></a>
-            <a href="/delete/{{ product.id }}"><button type="button" class="btn-delete">–1</button></a>
+            <a href="/delete/{{ product.id }}"><button type="button" class="btn-delete">-1</button></a>
         </td>
     </tr>
     {% endfor %}

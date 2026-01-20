@@ -1,31 +1,23 @@
 from flask import Flask, render_template, request, redirect
 from datetime import datetime
-import json
-import os
+import pymysql
 
 app = Flask(__name__)
-FILE_NAME = 'products.json'
 
 
 # -------------------------------
-# Функції для роботи з файлом
+# Підключення до MySQL (PyMySQL)
 # -------------------------------
-def load_products():
-    if not os.path.exists(FILE_NAME):
-        return []
-    with open(FILE_NAME, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-
-def save_products(products):
-    with open(FILE_NAME, 'w', encoding='utf-8') as f:
-        json.dump(products, f, indent=4, ensure_ascii=False)
-
-
-def get_next_id(products):
-    if not products:
-        return 1
-    return max(p['id'] for p in products) + 1
+def get_db_connection():
+    return pymysql.connect(
+        host='127.0.0.1',   # НЕ localhost
+        user='root',
+        password='usbw',
+        database='testdb',
+        port=3307,          # 🔴 КЛЮЧОВИЙ РЯДОК
+        charset='utf8',
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 
 # -------------------------------
@@ -33,7 +25,8 @@ def get_next_id(products):
 # -------------------------------
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    products = load_products()
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
     if request.method == 'POST':
         name = request.form['name']
@@ -42,30 +35,34 @@ def index():
         quantity = int(request.form['quantity'])
 
         # шукаємо такий самий товар
-        found = None
-        for p in products:
-            if p['name'] == name and p['model'] == model and p['price'] == price:
-                found = p
-                break
+        cursor.execute("""SELECT id, quantity FROM products 
+            WHERE name=%s AND model=%s AND price=%s""",
+            (name, model, price))
 
-        if found:
-            found['quantity'] += quantity
+        product = cursor.fetchone()
+
+        if product:
+            cursor.execute("""
+                UPDATE products
+                SET quantity = quantity + %s
+                WHERE id = %s
+            """, (quantity, product['id']))
         else:
-            new_product = {
-                'id': get_next_id(products),
-                'name': name,
-                'model': model,
-                'price': price,
-                'quantity': quantity,
-                'created_at': datetime.utcnow().isoformat()
-            }
-            products.append(new_product)
+            cursor.execute("""
+                INSERT INTO products (name, model, price, quantity, created_at)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (name, model, price, quantity, datetime.utcnow()))
 
-        save_products(products)
+        conn.commit()
+        cursor.close()
+        conn.close()
         return redirect('/')
 
-    # сортуємо по даті створення
-    products.sort(key=lambda x: x['created_at'])
+    cursor.execute("SELECT * FROM products ORDER BY created_at")
+    products = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
     return render_template('index.html', products=products)
 
 
@@ -74,15 +71,25 @@ def index():
 # -------------------------------
 @app.route('/delete/<int:id>')
 def delete(id):
-    products = load_products()
-    for p in products:
-        if p['id'] == id:
-            if p['quantity'] > 1:
-                p['quantity'] -= 1
-            else:
-                products.remove(p)
-            break
-    save_products(products)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT quantity FROM products WHERE id=%s", (id,))
+    product = cursor.fetchone()
+
+    if product:
+        if product['quantity'] > 1:
+            cursor.execute("""
+                UPDATE products
+                SET quantity = quantity - 1
+                WHERE id=%s
+            """, (id,))
+        else:
+            cursor.execute("DELETE FROM products WHERE id=%s", (id,))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
     return redirect('/')
 
 
@@ -91,21 +98,40 @@ def delete(id):
 # -------------------------------
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    products = load_products()
-    product = next((p for p in products if p['id'] == id), None)
-    if not product:
-        return 'Product not found'
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
     if request.method == 'POST':
-        product['name'] = request.form['name']
-        product['model'] = request.form['model']
-        product['price'] = float(request.form['price'])
-        product['quantity'] = int(request.form['quantity'])
-        save_products(products)
+        cursor.execute("""
+            UPDATE products
+            SET name=%s, model=%s, price=%s, quantity=%s
+            WHERE id=%s
+        """, (
+            request.form['name'],
+            request.form['model'],
+            float(request.form['price']),
+            int(request.form['quantity']),
+            id
+        ))
+        conn.commit()
+        cursor.close()
+        conn.close()
         return redirect('/')
+
+    cursor.execute("SELECT * FROM products WHERE id=%s", (id,))
+    product = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if not product:
+        return "Product not found"
 
     return render_template('update.html', product=product)
 
 
+# -------------------------------
+# Запуск
+# -------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
