@@ -1,0 +1,70 @@
+/* ====== Base ====== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+}
+
+/* ====== Headings ====== */
+h1 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* ====== Button ====== */
+button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* ====== Product List ====== */
+ul {
+    list-style: none;
+    padding: 0;
+    max-width: 600px;
+}
+
+li {
+    background: #fff;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ====== Product text ====== */
+li span {
+    font-weight: 500;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+}

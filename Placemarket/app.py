@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from datetime import datetime
 import pymysql
 
@@ -62,9 +62,9 @@ def index():
     products = cursor.fetchall()
 
     cursor.close()
-    conn.close()
-    return render_template('index.html', products=products)
-
+    #conn.close()
+    # return render_template('index.html', products=products)
+    return jsonify(products)
 
 # -------------------------------
 # Видалення
