@@ -1,16 +1,29 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 
-class ProductBase(BaseModel):
-    name: str = Field(..., min_length=1)
-    model: str = Field(..., min_length=1)
-    price: float = Field(..., gt=0)
-    quantity: int = Field(..., gt=0)
-
-class ProductCreate(ProductBase):
-    pass
-
-class ProductUpdate(ProductBase):
-    pass
-
-class Product(ProductBase):
+class Product(BaseModel):
     id: int
+    name: str
+    model: str
+    price: float
+    quantity: int
+    created_at: datetime
+
+class ProductCreate(BaseModel):
+    name: str
+    model: str
+    price: float
+    quantity: int
+
+class ProductUpdate(BaseModel):
+    name: str
+    model: str
+    price: float
+    quantity: int
+
+class ProductPatch(BaseModel):
+    name: Optional[str] = None
+    model: Optional[str] = None
+    price: Optional[float] = None
+    quantity: Optional[int] = None

@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", handleSubmit);
 
+document.getElementById("patchBtn")
+    .addEventListener("click", handlePatch);
+
     loadProducts();
 });
 
@@ -105,6 +108,7 @@ function startEdit(product) {
     form.dataset.editId = product.id;
 
     document.getElementById("submitBtn").textContent = "Update product";
+    document.getElementById("patchBtn").disabled = false;
 }
 
 /* ===================== DELETE ===================== */
@@ -121,6 +125,57 @@ function deleteProduct(id) {
         .catch(err => console.error(err));
 }
 
+
+/* ===================== PATCH ===================== */
+
+function handlePatch() {
+    const form = document.getElementById("productForm");
+    const id = form.dataset.editId;
+
+    if (!id) {
+        alert("Select product to edit first");
+        return;
+    }
+
+    const patchData = {};
+
+    if (document.getElementById("chkName").checked) {
+        patchData.name = form.name.value.trim();
+    }
+
+    if (document.getElementById("chkModel").checked) {
+        patchData.model = form.model.value.trim();
+    }
+
+    if (document.getElementById("chkPrice").checked) {
+        patchData.price = Number(form.price.value);
+    }
+
+    if (document.getElementById("chkQuantity").checked) {
+        patchData.quantity = Number(form.quantity.value);
+    }
+
+    if (Object.keys(patchData).length === 0) {
+        alert("No fields selected for PATCH");
+        return;
+    }
+
+    fetch(`${API_URL}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patchData)
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Patch failed");
+            return res.json();
+        })
+        .then(() => {
+            resetForm();
+            loadProducts();
+        })
+        .catch(err => console.error(err));
+}
+
 /* ===================== HELPERS ===================== */
 
 function resetForm() {
@@ -128,4 +183,12 @@ function resetForm() {
     form.reset();
     delete form.dataset.editId;
     document.getElementById("submitBtn").textContent = "Add product";
+    document.getElementById("patchBtn").disabled = true;
+    resetCheckboxes();
+}
+
+
+function resetCheckboxes() {
+    ["chkName", "chkModel", "chkPrice", "chkQuantity"]
+        .forEach(id => document.getElementById(id).checked = false);
 }
